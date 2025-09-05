@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Copy, Plus } from "lucide-react";
+import Image from "next/image";
 // import { payload } from "pix-payload";
 // import { QrCodePix } from "qrcode-pix";
 import { use, useEffect, useState } from "react";
@@ -10,12 +11,14 @@ import { useForm } from "react-hook-form";
 // import { QRCode } from "react-qrcode-logo";
 import QRCode from "react-qr-code";
 import { z } from "zod";
+import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
 import { Pix } from "@/core/pix";
 import { copyToClipboard, currency } from "@/utils/helpers";
+import Logo from "./logo";
 import {
   Form,
   FormControl,
@@ -54,6 +57,9 @@ export default function CreateStep({
 }: // onSubmit,
 CreateStepProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<"livre" | "igualmente">(
+    "livre"
+  );
   // const [valor, setValor] = useState("10.00");
 
   // const data = {
@@ -120,11 +126,16 @@ CreateStepProps) {
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div className="">
-        <h1 className="text-3xl font-bold mb-2">Rachadinha</h1>
-        <p className="text-gray-600 mb-6">
-          Evite o calote. Crie um link compartilhável para a galera contribuir
-          via PIX.
-        </p>
+        {/* <h1 className="text-3xl font-bold mb-2">Rachadinha</h1> */}
+
+        {/* <Logo fill="#1A5E35" /> */}
+        <div className="flex flex-col items-center">
+          <Image src={logo} alt="" width={100} height={100} />
+          <p className="text-gray-600 text-center mt-4">Evite o calote.</p>
+          <p className="text-gray-600 mb-6 text-center">
+            Crie um link para a galera contribuir no PIX.
+          </p>
+        </div>
 
         <Form {...form}>
           <div className="mt-8 flex items-center justify-center flex-col">
@@ -163,7 +174,7 @@ CreateStepProps) {
             <div>
               <Textarea
                 className="min-h-20"
-                placeholder="Caloteiros merecem uma mensagem amigável ..."
+                placeholder="caloteiros merecem uma mensagem amigável ..."
               />
             </div>
 
@@ -175,26 +186,47 @@ CreateStepProps) {
                   value={pixKey}
                   className="h-12"
                   onChange={(e) => onPixKeyChange(e.target.value)}
-                  placeholder="E-mail, CPF, tel ou aleatória"
+                  placeholder="E-mail, CPF, celular ou aleatória"
                   aria-describedby="pix-help"
                 />
               </FormControl>
             </FormItem>
 
             <div>
-              <FormLabel className="mb-2">Dividir entre quantos?</FormLabel>
-              <div className="font-bold uppercase text-xs bg-gray-200 grid gap-4 grid-cols-2 rounded-full p-1 border">
-                <div className="text-center rounded-full px-2 py-1 bg-primary text-white">
+              <FormLabel className="mb-2">Método de divisão</FormLabel>
+              <div className="font-bold uppercase text-xs bg-gray-200 grid gap-4 grid-cols-2 rounded-full p-1 border relative">
+                <div
+                  className={`absolute top-1 bottom-1 rounded-full bg-primary transition-all duration-300 ease-in-out ${
+                    selectedOption === "livre"
+                      ? "left-1 right-1/2 mr-2"
+                      : "left-1/2 right-1 ml-2"
+                  }`}
+                />
+                <button
+                  type="button"
+                  className={`text-center rounded-full px-2 py-1 relative z-10 cursor-pointer transition-colors duration-300 ${
+                    selectedOption === "livre" ? "text-white" : "text-gray-500"
+                  }`}
+                  onClick={() => setSelectedOption("livre")}
+                >
                   livre
-                </div>
-                <div className="text-center rounded-full px-2 py-1 text-gray-500">
+                </button>
+                <button
+                  type="button"
+                  className={`text-center rounded-full px-2 py-1 relative z-10 cursor-pointer transition-colors duration-300 ${
+                    selectedOption === "igualmente"
+                      ? "text-white"
+                      : "text-gray-500"
+                  }`}
+                  onClick={() => setSelectedOption("igualmente")}
+                >
                   igualmente
-                </div>
+                </button>
               </div>
             </div>
 
             <FormItem>
-              <FormLabel>Dividir entre quantos?</FormLabel>
+              <FormLabel>Dividir entre quantas pessoas?</FormLabel>
               <FormControl>
                 <Input
                   id="splitBetween"
@@ -208,7 +240,7 @@ CreateStepProps) {
             <div className="mt-auto">
               <Button
                 onClick={handleSubmit}
-                xdisabled={isLoading || !pixKey}
+                // xdisabled={isLoading || !pixKey}
                 className="w-full h-[50px] "
               >
                 {isLoading ? "Criando..." : "Criar Rachadinha"}

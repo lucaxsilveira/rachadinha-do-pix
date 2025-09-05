@@ -136,11 +136,6 @@ export default function RachadinhaPIX() {
           onSubmit={handlePaymentSubmit}
         />
       </main>
-      {/* </BackgroundGradientAnimation> */}
-
-      <footer className="text-center text-xs text-gray-500 p-4">
-        Divirta-se rachando 🍕🍻 — Pagamentos acontecem no banco.
-      </footer>
     </div>
   );
 }
